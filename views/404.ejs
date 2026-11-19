@@ -1,0 +1,8 @@
+<%- include("partials/head", { profile, pageTitle: serverError ? "Server error" : "Not found" }) %>
+<main class="wrap lost">
+  <h1><%= serverError ? "Something broke" : "Page not found" %></h1>
+  <p class="lede"><%= serverError ? "Please try again in a moment." : "That page does not exist." %></p>
+  <a class="btn fill" href="/">Back to the portfolio</a>
+</main>
+</body>
+</html>

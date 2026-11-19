@@ -1,0 +1,109 @@
+<%- include("partials/head", { profile }) %>
+<header>
+  <div class="wrap">
+    <b><%= profile.short_name %></b>
+    <nav aria-label="Main">
+      <a href="#projects">Projects</a>
+      <a href="#skills">Skills</a>
+      <a href="#github">GitHub</a>
+      <a href="#education">Education</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<div class="hero">
+  <canvas id="net" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <h1><%= profile.name %></h1>
+    <p class="lede"><%= profile.headline %></p>
+    <div class="cta">
+      <a class="btn fill" href="#projects">See my projects</a>
+      <a class="btn" href="<%= profile.github_url %>" target="_blank" rel="noopener">View GitHub</a>
+    </div>
+  </div>
+</div>
+
+<section id="projects">
+  <div class="wrap">
+    <h2>Projects</h2>
+    <% for (const p of projects) { %>
+    <article class="proj" id="<%= p.slug %>">
+      <div>
+        <h3><%= p.title %></h3>
+        <p class="tech"><%= p.tech_line %></p>
+      </div>
+      <div>
+        <% for (const para of p.summary) { %><p><%= para %></p><% } %>
+        <div class="links">
+          <% for (const link of p.links) { %><a href="<%= link.url %>" target="_blank" rel="noopener"><%= link.label %></a><% } %>
+        </div>
+      </div>
+    </article>
+    <% } %>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <h2>Skills</h2>
+    <div class="skills">
+      <% for (const group of skills) { %>
+      <div><h3><%= group.name %></h3><p><%= group.items_line %></p></div>
+      <% } %>
+    </div>
+  </div>
+</section>
+
+<section id="github">
+  <div class="wrap">
+    <h2>Live from GitHub</h2>
+    <p class="muted" id="gh-status">Loading repositories&hellip;</p>
+    <div class="langs" id="gh-langs"></div>
+    <ul class="repos" id="gh-repos"></ul>
+  </div>
+</section>
+
+<section id="education">
+  <div class="wrap">
+    <h2>Education</h2>
+    <div class="edu">
+      <div>
+        <h3><%= education.degree %></h3>
+        <p><%= education.university %>, <%= education.status %></p>
+      </div>
+      <dl>
+        <% for (const s of education.semesters) { %>
+        <dt>Semester <%= s.number %></dt><dd><%= s.sgpa %></dd>
+        <% } %>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <div class="wrap">
+    <h2>Contact</h2>
+    <p>I&rsquo;m open to <%= profile.looking_for %>. Send me a message below, or find my work on GitHub.</p>
+    <form id="contact-form" novalidate>
+      <label>Name<input name="name" autocomplete="name" required minlength="2" maxlength="80"></label>
+      <label>Email<input name="email" type="email" autocomplete="email" required maxlength="254"></label>
+      <label>Message<textarea name="message" rows="5" required minlength="10" maxlength="2000"></textarea></label>
+      <input class="trap" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="cta">
+        <button class="btn fill" type="submit">Send message</button>
+        <a class="btn" href="<%= profile.github_url %>" target="_blank" rel="noopener">Message me on GitHub</a>
+      </div>
+      <p id="form-status" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap"><%= profile.name %></div></footer>
+
+<script src="/static/js/net.js" defer></script>
+<script src="/static/js/app.js" defer></script>
+</body>
+</html>

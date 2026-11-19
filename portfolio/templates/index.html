@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+{% block body %}
+<header>
+  <div class="wrap">
+    <b>{{ profile.short_name }}</b>
+    <nav aria-label="Main">
+      <a href="#projects">Projects</a>
+      <a href="#skills">Skills</a>
+      <a href="#github">GitHub</a>
+      <a href="#education">Education</a>
+      <a href="#contact">Contact</a>
+      <a href="#project-queries">Queries</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<div class="hero">
+  <canvas id="net" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <h1>{{ profile.name }}</h1>
+    <p class="lede">{{ profile.headline }}</p>
+    <div class="cta">
+      <a class="btn fill" href="#projects">See my projects</a>
+      <a class="btn" href="{{ profile.github_url }}" target="_blank" rel="noopener">View GitHub</a>
+    </div>
+  </div>
+</div>
+
+<section id="projects">
+  <div class="wrap">
+    <h2>Projects</h2>
+    {% for p in projects %}
+    <article class="proj" id="{{ p.slug }}">
+      <div>
+        <h3>{{ p.title }}</h3>
+        <p class="tech">{{ p.tech_line }}</p>
+      </div>
+      <div>
+        {% for para in p.summary %}<p>{{ para }}</p>{% endfor %}
+        <div class="links">
+          {% for link in p.links %}<a href="{{ link.url }}" target="_blank" rel="noopener">{{ link.label }}</a>{% endfor %}
+        </div>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <h2>Skills</h2>
+    <div class="skills">
+      {% for group in skills %}
+      <div><h3>{{ group.name }}</h3><p>{{ group.items_line }}</p></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section id="github">
+  <div class="wrap">
+    <h2>Live from GitHub</h2>
+    <p class="muted" id="gh-status">Loading repositories&hellip;</p>
+    <div class="langs" id="gh-langs"></div>
+    <ul class="repos" id="gh-repos"></ul>
+  </div>
+</section>
+
+<section id="education">
+  <div class="wrap">
+    <h2>Education</h2>
+    <div class="edu">
+      <div>
+        <h3>{{ education.degree }}</h3>
+        <p>{{ education.university }}, {{ education.status }}</p>
+      </div>
+      <dl>
+        {% for s in education.semesters %}
+        <dt>Semester {{ s.number }}</dt><dd>{{ s.sgpa }}</dd>
+        {% endfor %}
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <div class="wrap">
+    <h2>Contact</h2>
+    <p>I&rsquo;m open to {{ profile.looking_for }}. Send me a message below, or find my work on GitHub.</p>
+    <form id="contact-form" novalidate>
+      <label>Name<input name="name" autocomplete="name" required minlength="2" maxlength="80"></label>
+      <label>Email<input name="email" type="email" autocomplete="email" required maxlength="254"></label>
+      <label>Message<textarea name="message" rows="5" required minlength="10" maxlength="2000"></textarea></label>
+      <input class="trap" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="cta">
+        <button class="btn fill" type="submit">Send message</button>
+        <a class="btn" href="{{ profile.github_url }}" target="_blank" rel="noopener">Message me on GitHub</a>
+      </div>
+      <p id="form-status" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</section>
+
+<section id="project-queries" class="queries">
+  <div class="wrap">
+    <h2>Project Queries</h2>
+    <p class="lede-sm">
+      Have a question about any of my projects? Queries about my projects are accepted
+      <strong>only through Email or GitHub</strong>.
+    </p>
+
+    <div class="query-channels">
+      <div class="channel-card">
+        <p class="channel-kicker">Channel 01 &middot; Email Only</p>
+        <h3>{{ profile.email }}</h3>
+        <p class="muted">Use email for architecture questions, project walkthroughs, dataset/API setup help, or collaboration inquiries.</p>
+        <div class="cta">
+          <a class="btn fill" href="mailto:{{ profile.email }}?subject=Project%20Query">Email Query</a>
+          <button class="btn" type="button" id="copy-email-btn" data-email="{{ profile.email }}">Copy Email</button>
+        </div>
+      </div>
+
+      <div class="channel-card">
+        <p class="channel-kicker">Channel 02 &middot; GitHub Only</p>
+        <h3>github.com/{{ profile.github_user }}</h3>
+        <p class="muted">Use GitHub Issues on the repository for code-specific questions, bug reports, or implementation discussions.</p>
+        <div class="cta">
+          <a class="btn fill" href="{{ repo_url }}/issues/new" target="_blank" rel="noopener">Open GitHub Issue</a>
+          <a class="btn" href="{{ profile.github_url }}" target="_blank" rel="noopener">GitHub Profile</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="query-grid">
+      <div>
+        <h3>Details to Include in Your Query</h3>
+        <p class="muted">Include these user and project details when asking a query via Email or GitHub:</p>
+        <ol class="query-checklist">
+          {% for item in query_requirements %}
+          <li>
+            <strong><span>{{ item.index }}</span> {{ item.title }}</strong>
+            <p>{{ item.detail }}</p>
+          </li>
+          {% endfor %}
+        </ol>
+      </div>
+
+      <div class="channel-card">
+        <h3>Prepare Your Query for Email or GitHub</h3>
+        <p class="muted">Draft your details below to open a pre-filled Email or GitHub Issue directly.</p>
+        <div class="query-form" id="query-composer" data-email="{{ profile.email }}" data-repo="{{ repo_url }}">
+          <label>Your Name<input id="q-name" type="text" placeholder="e.g., Aarav Sharma" maxlength="80"></label>
+          <label>Your Email or GitHub Handle<input id="q-reply" type="text" placeholder="you@example.com or @handle" maxlength="120"></label>
+          <label>Project
+            <select id="q-project">
+              {% for p in projects %}
+              <option value="{{ p.title }}">{{ p.title }}</option>
+              {% endfor %}
+              <option value="General / Other Project">General / Other Project</option>
+            </select>
+          </label>
+          <label>Your Project Query<textarea id="q-body" rows="4" placeholder="Describe your question, bug, or topic..." maxlength="1500"></textarea></label>
+          <div class="cta">
+            <button class="btn fill" type="button" id="q-send-email">Send via Email</button>
+            <button class="btn" type="button" id="q-send-github">Ask on GitHub</button>
+          </div>
+          <p id="q-status" role="status" aria-live="polite"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap">{{ profile.name }} &middot; <a href="mailto:{{ profile.email }}">{{ profile.email }}</a></div></footer>
+
+<script src="{{ url_for('static', filename='js/net.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+{% endblock %}
